@@ -22,8 +22,25 @@ export default class HashMap {
   set(key, value) {
     // We first check if the hash map has exceeded its load factor
     if (this.keys().length / this.capacity >= this.loadFactor) {
+      this.capacity *= 2;
+      let newArray = new Array(capacity);
+      // We create a new array
+      for (i = 0; i < this.capacity; i++) {
+        newArray[i] = new LinkedList();
+      }
+
+      let tmp = this.hashMap;
+      // We loop through the original array
+      for (let i = 0; i < capacity / 2; i++) {
+        // We loop through the bucket (the linked list) and append the nodes using the new hash code given by the hash() function
+        while (tmp[i]) {
+          newArray[this.hash(tmp[i].key)].append(tmp[i].key, tmp[i].value);
+          tmp = tmp.next;
+        }
+      }
     }
 
+    // When there's still place (below the load factor), we append the new node using the hash code
     let hashCode = this.hash(key);
     if (!this.hashMap[hashCode]) {
       this.hashMap[hashCode] = new LinkedList();
